@@ -651,7 +651,7 @@ public abstract class TypeCodec<T> {
    */
   public boolean accepts(Object value) {
     checkNotNull(value, "Parameter value cannot be null");
-    return GuavaCompatibility.INSTANCE.isSupertypeOf(this.javaType, TypeToken.of(value.getClass()));
+    return Futures.isSupertypeOf(this.javaType, TypeToken.of(value.getClass()));
   }
 
   @Override

@@ -135,7 +135,7 @@ public class PoolingOptions {
   public static final int DEFAULT_HEARTBEAT_INTERVAL_SECONDS = 30;
 
   private static final Executor DEFAULT_INITIALIZATION_EXECUTOR =
-      GuavaCompatibility.INSTANCE.sameThreadExecutor();
+      Futures.sameThreadExecutor();
 
   private volatile Cluster.Manager manager;
   private volatile ProtocolVersion protocolVersion;

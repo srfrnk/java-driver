@@ -177,8 +177,8 @@ class MethodMapper {
       if (returnMapper == null) return future;
 
       return mapOne
-          ? GuavaCompatibility.INSTANCE.transform(future, returnMapper.mapOneFunctionWithoutAliases)
-          : GuavaCompatibility.INSTANCE.transform(
+          ? Futures.transform(future, returnMapper.mapOneFunctionWithoutAliases)
+          : Futures.transform(
               future, returnMapper.mapAllFunctionWithoutAliases);
     } else {
       ResultSet rs = session.execute(bs);

@@ -114,7 +114,7 @@ public abstract class AbstractSession implements Session {
     final CodecRegistry codecRegistry = getCluster().getConfiguration().getCodecRegistry();
     ListenableFuture<PreparedStatement> prepared =
         prepareAsync(statement.getQueryString(codecRegistry), statement.getOutgoingPayload());
-    return GuavaCompatibility.INSTANCE.transform(
+    return Futures.transform(
         prepared,
         new Function<PreparedStatement, PreparedStatement>() {
           @Override

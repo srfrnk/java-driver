@@ -30,7 +30,7 @@ class ChainedResultSetFuture extends AbstractFuture<ResultSet> implements Result
   void setSource(ResultSetFuture source) {
     if (this.isCancelled()) source.cancel(false);
     this.source = source;
-    GuavaCompatibility.INSTANCE.addCallback(
+    Futures.addCallback(
         source,
         new FutureCallback<ResultSet>() {
           @Override

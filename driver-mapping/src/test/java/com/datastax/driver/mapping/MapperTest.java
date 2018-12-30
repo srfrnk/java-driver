@@ -521,7 +521,7 @@ public class MapperTest extends CCMTestsSupport {
   private void executeFunctionAndTestForException(
       User u, Mapper<User> mapper, Function<Void, Thread> f2) {
     ListenableFuture<Void> f = mapper.saveAsync(u);
-    ListenableFuture<Thread> toTest = GuavaCompatibility.INSTANCE.transform(f, f2);
+    ListenableFuture<Thread> toTest = Futures.transform(f, f2);
     try {
       Thread executedThread = toTest.get();
       if (executedThread == Thread.currentThread()) {

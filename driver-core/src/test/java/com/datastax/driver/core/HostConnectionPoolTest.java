@@ -1583,7 +1583,7 @@ public class HostConnectionPoolTest extends ScassandraTestBase.PerClassCluster {
         throws ConnectionException {
       this.connectionFuture = pool.borrowConnection(timeoutMillis, MILLISECONDS, maxQueueSize);
       requestInitialized =
-          GuavaCompatibility.INSTANCE.transform(
+          Futures.transform(
               this.connectionFuture,
               new Function<Connection, Connection.ResponseHandler>() {
                 @Override
@@ -1688,7 +1688,7 @@ public class HostConnectionPoolTest extends ScassandraTestBase.PerClassCluster {
     @Override
     public ListenableFuture<?> submit(Runnable task) {
       ListenableFuture<?> future = super.submit(task);
-      GuavaCompatibility.INSTANCE.addCallback(
+      Futures.addCallback(
           future,
           new FutureCallback<Object>() {
             @Override

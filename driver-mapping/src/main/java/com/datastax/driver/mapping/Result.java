@@ -126,7 +126,7 @@ public class Result<T> implements PagingIterable<Result<T>, T> {
 
   @Override
   public ListenableFuture<Result<T>> fetchMoreResults() {
-    return GuavaCompatibility.INSTANCE.transform(
+    return Futures.transform(
         rs.fetchMoreResults(),
         new Function<ResultSet, Result<T>>() {
           @Override

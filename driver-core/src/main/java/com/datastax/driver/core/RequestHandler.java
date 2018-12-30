@@ -379,7 +379,7 @@ class RequestHandler {
               poolingOptions.getPoolTimeoutMillis(),
               TimeUnit.MILLISECONDS,
               poolingOptions.getMaxQueueSize());
-      GuavaCompatibility.INSTANCE.addCallback(
+      Futures.addCallback(
           connectionFuture,
           new FutureCallback<Connection>() {
             @Override

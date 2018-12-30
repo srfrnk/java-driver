@@ -114,7 +114,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
   public void should_chain_query_on_async_session_init_with_same_executor(String keyspace)
       throws Exception {
     ListenableFuture<Integer> resultFuture =
-        connectAndQuery(keyspace, GuavaCompatibility.INSTANCE.sameThreadExecutor());
+        connectAndQuery(keyspace, Futures.sameThreadExecutor());
 
     Integer result = Uninterruptibles.getUninterruptibly(resultFuture);
     assertThat(result).isEqualTo(1);
@@ -136,7 +136,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
   @Test(groups = "short")
   public void should_propagate_error_to_chained_query_if_session_init_fails() throws Exception {
     ListenableFuture<Integer> resultFuture =
-        connectAndQuery("wrong_keyspace", GuavaCompatibility.INSTANCE.sameThreadExecutor());
+        connectAndQuery("wrong_keyspace", Futures.sameThreadExecutor());
 
     try {
       Uninterruptibles.getUninterruptibly(resultFuture);
@@ -152,7 +152,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
     for (int i = 0; i < 1000; i++) {
       ResultSetFuture f = session().executeAsync("select release_version from system.local");
       ListenableFuture<Thread> f2 =
-          GuavaCompatibility.INSTANCE.transform(
+          Futures.transform(
               f,
               new Function<ResultSet, Thread>() {
                 @Override
@@ -176,7 +176,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
     for (int i = 0; i < 1000; i++) {
       ResultSetFuture f = session.executeAsync("select release_version from system.local");
       ListenableFuture<Thread> f2 =
-          GuavaCompatibility.INSTANCE.transform(
+          Futures.transform(
               f,
               new Function<ResultSet, Thread>() {
                 @Override
@@ -202,7 +202,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
       statement.setFetchSize(10);
       ResultSetFuture f = session().executeAsync(statement);
       ListenableFuture<Thread> f2 =
-          GuavaCompatibility.INSTANCE.transform(
+          Futures.transform(
               f,
               new Function<ResultSet, Thread>() {
                 @Override
@@ -243,7 +243,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
   private ListenableFuture<Integer> connectAndQuery(String keyspace, Executor executor) {
     ListenableFuture<Session> sessionFuture = cluster().connectAsync(keyspace);
     ListenableFuture<ResultSet> queryFuture =
-        GuavaCompatibility.INSTANCE.transformAsync(
+        Futures.transformAsync(
             sessionFuture,
             new AsyncFunction<Session, ResultSet>() {
               @Override
@@ -252,7 +252,7 @@ public class AsyncQueryTest extends CCMTestsSupport {
               }
             },
             executor);
-    return GuavaCompatibility.INSTANCE.transform(
+    return Futures.transform(
         queryFuture,
         new Function<ResultSet, Integer>() {
           @Override

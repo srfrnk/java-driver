@@ -112,7 +112,7 @@ public class Cluster implements Closeable {
   static {
     logDriverVersion();
     // Force initialization to fail fast if there is an issue detecting the version
-    GuavaCompatibility.init();
+    // GuavaCompatibility.init();
   }
 
   @VisibleForTesting
@@ -381,16 +381,16 @@ public class Cluster implements Closeable {
     } else {
       final String useQuery = "USE " + keyspace;
       ListenableFuture<ResultSet> keyspaceSet =
-          GuavaCompatibility.INSTANCE.transformAsync(
-              sessionInitialized,
-              new AsyncFunction<Session, ResultSet>() {
-                @Override
-                public ListenableFuture<ResultSet> apply(Session session) throws Exception {
-                  return session.executeAsync(useQuery);
-                }
-              });
+      Futures.transformAsync(
+        sessionInitialized,
+        new AsyncFunction<Session, ResultSet>() {
+          @Override
+          public ListenableFuture<ResultSet> apply(Session session) throws Exception {
+            return session.executeAsync(useQuery);
+          }
+      });
       ListenableFuture<ResultSet> withErrorHandling =
-          GuavaCompatibility.INSTANCE.withFallback(
+          Futures.withFallback(
               keyspaceSet,
               new AsyncFunction<Throwable, ResultSet>() {
                 @Override
@@ -410,7 +410,7 @@ public class Cluster implements Closeable {
                   throw Throwables.propagate(t);
                 }
               });
-      return GuavaCompatibility.INSTANCE.transform(withErrorHandling, Functions.constant(session));
+      return Futures.transform(withErrorHandling, Functions.constant(session));
     }
   }
 
@@ -2535,7 +2535,7 @@ public class Cluster implements Closeable {
                         future.setResult(rs);
                       }
                     },
-                    GuavaCompatibility.INSTANCE.sameThreadExecutor());
+                    Futures.sameThreadExecutor());
 
               } catch (Exception e) {
                 logger.warn("Error while waiting for schema agreement", e);
@@ -2977,7 +2977,7 @@ public class Cluster implements Closeable {
                 @Override
                 public void runMayThrow() throws Exception {
                   ListenableFuture<?> f = execute(task);
-                  GuavaCompatibility.INSTANCE.addCallback(
+                  Futures.addCallback(
                       f,
                       new FutureCallback<Object>() {
                         @Override

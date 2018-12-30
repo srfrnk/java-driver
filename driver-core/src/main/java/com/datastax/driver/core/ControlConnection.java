@@ -697,7 +697,7 @@ class ControlConnection implements Connection.Owner {
       connection.write(peersV2Future);
       final SettableFuture<ResultSet> peersFuture = SettableFuture.create();
       // if peers v2 query fails, query peers table instead.
-      GuavaCompatibility.INSTANCE.addCallback(
+      Futures.addCallback(
           peersV2Future,
           new FutureCallback<ResultSet>() {
 

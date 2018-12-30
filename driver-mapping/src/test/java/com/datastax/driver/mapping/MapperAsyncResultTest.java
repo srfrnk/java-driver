@@ -94,7 +94,7 @@ public class MapperAsyncResultTest extends CCMTestsSupport {
     ResultsAccumulator accumulator = new ResultsAccumulator();
     ListenableFuture<Result<User>> results = mapper.mapAsync(session().executeAsync(statement));
     ListenableFuture<Result<User>> future =
-        GuavaCompatibility.INSTANCE.transformAsync(results, accumulator);
+        Futures.transformAsync(results, accumulator);
     Futures.getUnchecked(future);
     assertThat(accumulator.all.size()).isEqualTo(totalCount);
   }
@@ -113,7 +113,7 @@ public class MapperAsyncResultTest extends CCMTestsSupport {
       }
       boolean wasLastPage = users.getExecutionInfo().getPagingState() == null;
       if (wasLastPage) return Futures.immediateFuture(users);
-      else return GuavaCompatibility.INSTANCE.transformAsync(users.fetchMoreResults(), this);
+      else return Futures.transformAsync(users.fetchMoreResults(), this);
     }
   }
 }

@@ -240,12 +240,12 @@ class Connection {
         factory.manager.configuration.getPoolingOptions().getInitializationExecutor();
 
     ListenableFuture<Void> initializeTransportFuture =
-        GuavaCompatibility.INSTANCE.transformAsync(
+        Futures.transformAsync(
             channelReadyFuture, onChannelReady(protocolVersion, initExecutor), initExecutor);
 
     // Fallback on initializeTransportFuture so we can properly propagate specific exceptions.
     ListenableFuture<Void> initFuture =
-        GuavaCompatibility.INSTANCE.withFallback(
+        Futures.withFallback(
             initializeTransportFuture,
             new AsyncFunction<Throwable, Void>() {
               @Override
@@ -278,7 +278,7 @@ class Connection {
             initExecutor);
 
     // Ensure the connection gets closed if the caller cancels the returned future.
-    GuavaCompatibility.INSTANCE.addCallback(
+    Futures.addCallback(
         initFuture,
         new MoreFutures.FailureCallback<Void>() {
           @Override
@@ -309,7 +309,7 @@ class Connection {
             write(
                 new Requests.Startup(
                     protocolOptions.getCompression(), protocolOptions.isNoCompact()));
-        return GuavaCompatibility.INSTANCE.transformAsync(
+        return Futures.transformAsync(
             startupResponseFuture, onStartupResponse(protocolVersion, initExecutor), initExecutor);
       }
     };
@@ -385,7 +385,7 @@ class Connection {
             null, protocolVersion, new Requests.Query("select cluster_name from system.local"));
     try {
       write(clusterNameFuture);
-      return GuavaCompatibility.INSTANCE.transformAsync(
+      return Futures.transformAsync(
           clusterNameFuture,
           new AsyncFunction<ResultSet, Void>() {
             @Override
@@ -415,7 +415,7 @@ class Connection {
         new Requests.Credentials(((ProtocolV1Authenticator) authenticator).getCredentials());
     try {
       Future authResponseFuture = write(creds);
-      return GuavaCompatibility.INSTANCE.transformAsync(
+      return Futures.transformAsync(
           authResponseFuture,
           new AsyncFunction<Message.Response, Void>() {
             @Override
@@ -451,7 +451,7 @@ class Connection {
 
     try {
       Future authResponseFuture = write(new Requests.AuthResponse(initialResponse));
-      return GuavaCompatibility.INSTANCE.transformAsync(
+      return Futures.transformAsync(
           authResponseFuture, onV2AuthResponse(authenticator, protocolVersion, executor), executor);
     } catch (Exception e) {
       return Futures.immediateFailedFuture(e);
@@ -482,7 +482,7 @@ class Connection {
               // Otherwise, send the challenge response back to the server
               logger.trace("{} Sending Auth response to challenge", this);
               Future nextResponseFuture = write(new Requests.AuthResponse(responseToServer));
-              return GuavaCompatibility.INSTANCE.transformAsync(
+              return Futures.transformAsync(
                   nextResponseFuture,
                   onV2AuthResponse(authenticator, protocolVersion, executor),
                   executor);
@@ -648,7 +648,7 @@ class Connection {
         // Note: we quote the keyspace below, because the name is the one coming from Cassandra, so
         // it's in the right case already
         Future future = write(new Requests.Query("USE \"" + keyspace + '"'));
-        GuavaCompatibility.INSTANCE.addCallback(
+        Futures.addCallback(
             future,
             new FutureCallback<Message.Response>() {
 

@@ -57,7 +57,7 @@ public class AsyncResultSetTest extends CCMTestsSupport {
     ResultsAccumulator results = new ResultsAccumulator();
 
     ListenableFuture<ResultSet> future =
-        GuavaCompatibility.INSTANCE.transformAsync(session().executeAsync(statement), results);
+        Futures.transformAsync(session().executeAsync(statement), results);
 
     Futures.getUnchecked(future);
 
@@ -77,7 +77,7 @@ public class AsyncResultSetTest extends CCMTestsSupport {
       }
       boolean wasLastPage = rs.getExecutionInfo().getPagingState() == null;
       if (wasLastPage) return Futures.immediateFuture(rs);
-      else return GuavaCompatibility.INSTANCE.transformAsync(rs.fetchMoreResults(), this);
+      else return Futures.transformAsync(rs.fetchMoreResults(), this);
     }
   }
 }

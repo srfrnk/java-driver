@@ -96,7 +96,7 @@ public class ConnectionReleaseTest extends ScassandraTestBase {
         mockFutures.add(session.executeAsync("mock query"));
 
       ListenableFuture<ResultSet> future =
-          GuavaCompatibility.INSTANCE.transformAsync(
+          Futures.transformAsync(
               session.executeAsync("select c from test1 where k=1"),
               new AsyncFunction<ResultSet, ResultSet>() {
                 @Override

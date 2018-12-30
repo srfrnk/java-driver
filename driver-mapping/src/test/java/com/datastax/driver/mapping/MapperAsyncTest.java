@@ -75,7 +75,7 @@ public class MapperAsyncTest extends CCMTestsSupport {
                 .build());
 
     ListenableFuture<MappingManager> mappingManagerFuture =
-        GuavaCompatibility.INSTANCE.transform(
+        Futures.transform(
             cluster2.connectAsync(),
             new Function<Session, MappingManager>() {
               @Override
@@ -84,7 +84,7 @@ public class MapperAsyncTest extends CCMTestsSupport {
               }
             });
 
-    GuavaCompatibility.INSTANCE.addCallback(
+    Futures.addCallback(
         mappingManagerFuture,
         new SuccessCallback<MappingManager>() {
 
@@ -93,21 +93,21 @@ public class MapperAsyncTest extends CCMTestsSupport {
 
             final Mapper<User> mapper = manager.mapper(User.class);
             ListenableFuture<Void> saveFuture = mapper.saveAsync(paul);
-            GuavaCompatibility.INSTANCE.addCallback(
+            Futures.addCallback(
                 saveFuture,
                 new SuccessCallback<Void>() {
 
                   @Override
                   public void onSuccess(Void result) {
                     ListenableFuture<User> getFuture = mapper.getAsync(paul.getUserId());
-                    GuavaCompatibility.INSTANCE.addCallback(
+                    Futures.addCallback(
                         getFuture,
                         new SuccessCallback<User>() {
 
                           @Override
                           public void onSuccess(User paul) {
 
-                            GuavaCompatibility.INSTANCE.addCallback(
+                            Futures.addCallback(
                                 mapper.deleteAsync(paul),
                                 new SuccessCallback<Void>() {
                                   @Override

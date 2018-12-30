@@ -94,7 +94,7 @@ public class ReusedStreamIdTest extends CCMTestsSupport {
           String query = String.format("select %s from system.local", column);
           ResultSetFuture future = session().executeAsync(query);
 
-          GuavaCompatibility.INSTANCE.addCallback(
+          Futures.addCallback(
               future,
               new FutureCallback<ResultSet>() {
                 @Override

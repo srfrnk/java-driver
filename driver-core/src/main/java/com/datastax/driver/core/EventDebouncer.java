@@ -235,7 +235,7 @@ abstract class EventDebouncer<T> {
     } else {
       logger.trace("{} debouncer: delivering {} events", name, toDeliver.size());
       ListenableFuture<?> delivered = callback.deliver(toDeliver);
-      GuavaCompatibility.INSTANCE.addCallback(
+      Futures.addCallback(
           delivered,
           new FutureCallback<Object>() {
             @Override

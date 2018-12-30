@@ -241,7 +241,7 @@ public class TimeoutStressTest extends CCMTestsSupport {
         try {
           concurrentQueries.acquire();
           ResultSetFuture future = session.executeAsync(statement.bind("0"));
-          GuavaCompatibility.INSTANCE.addCallback(
+          Futures.addCallback(
               future,
               new FutureCallback<ResultSet>() {
 
