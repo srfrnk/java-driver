@@ -17,7 +17,6 @@ package com.datastax.driver.core.querybuilder;
 
 import com.datastax.driver.core.CodecRegistry;
 import com.google.common.collect.Lists;
-
 import java.io.Serializable;
 import java.util.List;
 
